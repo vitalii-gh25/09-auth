@@ -8,12 +8,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'picsum.photos',
-        pathname: '/**', // разрешаем любые пути
       },
       {
         protocol: 'https',
         hostname: 'ac.goit.global',
-        pathname: '/fullstack/react/**', // разрешаем все пути в этой папке
       },
     ],
   },
