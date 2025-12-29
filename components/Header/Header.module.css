@@ -18,27 +18,14 @@
   color: #ddd;
 }
 
-/* Ensure visited links remain white */
-
-.header a:visited {
-  color: white;
-}
-
-.navigation li a:visited {
-  color: white;
-}
-
-/* Navigation styles */
-
 .navigation {
   list-style-type: none;
   margin: 0;
   padding: 0;
   display: flex;
+  gap: 1rem;
 
   align-items: center;
-
-  gap: 1rem;
 }
 
 .navigationItem {

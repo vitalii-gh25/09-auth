@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/authStore';
 import { logout } from '@/lib/api/clientApi';
+import css from './AuthNavigation.module.css';
 
 const AuthNavigation = () => {
   const router = useRouter();
@@ -28,21 +29,29 @@ const AuthNavigation = () => {
   // інакше - лінки для авторизації
   return isAuthenticated ? (
     <>
-      <li>
-        <Link href="/profile">Profile</Link>
+      <li className={css.navigationItem}>
+        <Link className={css.navigationLink} href="/profile">
+          Profile
+        </Link>
       </li>
-      <li>
-        <p>{user?.email}</p>
-        <button onClick={handleLogout}>Logout</button>
+      <li className={css.navigationItem}>
+        <p className={css.userEmail}> {user?.email}</p>
+        <button className={css.logoutButton} onClick={handleLogout}>
+          Logout
+        </button>
       </li>
     </>
   ) : (
     <>
-      <li>
-        <Link href="/sign-in">Login</Link>
+      <li className={css.navigationItem}>
+        <Link className={css.navigationLink} href="/sign-in">
+          Login
+        </Link>
       </li>
-      <li>
-        <Link href="/sign-up">Sign up</Link>
+      <li className={css.navigationItem}>
+        <Link className={css.navigationLink} href="/sign-up">
+          Sign up
+        </Link>
       </li>
     </>
   );
