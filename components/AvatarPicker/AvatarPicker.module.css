@@ -1,0 +1,63 @@
+.picker {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  border: 1px solid white;
+  position: relative;
+  background-color: #f0f0f0; /* светлый фон для контейнера */
+}
+
+.avatar {
+  width: 200px;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.wrapper {
+  cursor: pointer;
+  position: absolute;
+  width: 150px; /* ширина серого блока */
+  height: 50px; /* высота серого блока */
+  top: 50%; /* центр по вертикали */
+  left: 50%; /* центр по горизонтали */
+  transform: translate(-50%, -50%); /* сдвигаем на половину ширины и высоты */
+  background-color: rgba(128, 128, 128, 0.7); /* серый полупрозрачный фон */
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.wrapper:hover {
+  background-color: rgba(128, 128, 128, 0.9);
+}
+
+.reload {
+  opacity: 0;
+}
+
+.input {
+  display: none;
+}
+
+.remove {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.error {
+  color: red;
+  margin-top: 8px;
+  text-align: center;
+}

@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'ac.goit.global',
       },
+      {
+        protocol: 'https',
+        hostname: 'aliiev-lomach.com',
+      },
     ],
   },
   async headers() {

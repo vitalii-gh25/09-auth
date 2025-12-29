@@ -8,12 +8,11 @@ import {
 } from '@tanstack/react-query';
 
 import NotesClient from './Notes.client';
-import { fetchNotes } from '@/lib/api';
+import { fetchNotes } from '@/lib/api/clientApi';
 
 type Props = {
   params: Promise<{ slug?: string[] }>;
 };
-
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -47,7 +46,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   };
 }
-
 
 const NotesByCategory = async ({ params }: Props) => {
   const { slug: slugArr } = await params;
