@@ -2,39 +2,35 @@
 
 'use client';
 
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNoteStore } from '@/lib/store/noteStore';
+import { nextServer } from '@/lib/api/api';
 import css from './NoteForm.module.css';
 
-type CreateNoteDto = {
+export interface CreateNoteDto {
   title: string;
   content: string;
   tag: string;
-};
+}
 
 export default function NoteForm() {
   const router = useRouter();
-  const queryClient = useQueryClient(); // ✅ додано
+  const queryClient = useQueryClient();
   const { draft, setDraft, clearDraft } = useNoteStore();
 
   const { mutate, isPending, isError } = useMutation({
-    mutationFn: async (data: CreateNoteDto) => {
-      await axios.post('https://notehub-public.goit.study/api/notes', data, {
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
-        },
-      });
+    mutationFn: async (note: CreateNoteDto) => {
+      await nextServer.post('/notes', note); // отправка с куками
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] }); // ✅ інвалідація кешу
+      queryClient.invalidateQueries({ queryKey: ['notes'] }); // обновляем кеш заметок
       clearDraft();
       router.back();
     },
   });
 
-  const onChange = (
+  const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
@@ -49,7 +45,7 @@ export default function NoteForm() {
   };
 
   const handleCancel = () => {
-    router.back(); // draft НЕ очищаємо
+    router.back();
   };
 
   return (
@@ -61,11 +57,12 @@ export default function NoteForm() {
           name="title"
           type="text"
           className={css.input}
+          value={draft.title}
+          onChange={handleChange}
           required
           minLength={3}
           maxLength={50}
-          value={draft.title}
-          onChange={onChange}
+          disabled={isPending}
         />
       </div>
 
@@ -76,9 +73,10 @@ export default function NoteForm() {
           name="content"
           rows={6}
           className={css.textarea}
-          maxLength={500}
           value={draft.content}
-          onChange={onChange}
+          onChange={handleChange}
+          maxLength={500}
+          disabled={isPending}
         />
       </div>
 
@@ -88,9 +86,10 @@ export default function NoteForm() {
           id="tag"
           name="tag"
           className={css.select}
-          required
           value={draft.tag}
-          onChange={onChange}
+          onChange={handleChange}
+          required
+          disabled={isPending}
         >
           <option value="">Select tag</option>
           <option value="Todo">Todo</option>
@@ -101,11 +100,14 @@ export default function NoteForm() {
         </select>
       </div>
 
+      {isError && (
+        <p className={css.error}>Error creating note. Please try again.</p>
+      )}
+
       <div className={css.actions}>
         <button type="submit" className={css.submitButton} disabled={isPending}>
-          {isPending ? 'Saving...' : 'Create note'}
+          {isPending ? 'Saving...' : 'Create Note'}
         </button>
-
         <button
           type="button"
           className={css.cancelButton}
@@ -115,10 +117,6 @@ export default function NoteForm() {
           Cancel
         </button>
       </div>
-
-      {isError && (
-        <p className={css.error}>Error creating note. Please try again.</p>
-      )}
     </form>
   );
 }

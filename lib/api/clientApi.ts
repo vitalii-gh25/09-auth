@@ -34,14 +34,24 @@ export const fetchNoteById = async (id: string): Promise<Note> => {
   return data;
 };
 
-export const createNote = async (note: {
+export interface CreateNoteDto {
   title: string;
   content: string;
   tag: string;
-}): Promise<Note> => {
-  const { data } = await nextServer.post<Note>('/notes', note);
-  return data;
+}
+
+export const createNote = async (note: CreateNoteDto): Promise<Note> => {
+  const res = await nextServer.post<Note>('/notes', note);
+  return res.data;
 };
+// export const createNote = async (note: {
+//   title: string;
+//   content: string;
+//   tag: string;
+// }): Promise<Note> => {
+//   const { data } = await nextServer.post<Note>('/notes', note);
+//   return data;
+// };
 
 export const deleteNote = async (id: string): Promise<Note> => {
   const { data } = await nextServer.delete<Note>(`/notes/${id}`);
