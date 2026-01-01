@@ -1,6 +1,8 @@
-// import Image from 'next/image';
+// app/(private routes)/profile/page.tsx
 
+import Image from 'next/image';
 import { Metadata } from 'next';
+
 import css from './ProfilePage.module.css';
 import { getServerMe } from '@/lib/api/serverApi';
 
@@ -29,12 +31,13 @@ const ProfilePage = async () => {
 
         <div className={css.avatarWrapper}>
           {user.avatar && (
-            <img
-              src={user.avatar} // берём полный URL с бекенда
+            <Image
+              src={user.avatar} // полный URL с бэкенда
               alt="User Avatar"
               width={120}
               height={120}
               className={css.avatar}
+              priority
             />
           )}
         </div>
