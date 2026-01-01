@@ -15,7 +15,7 @@ export interface FetchNotesParams {
   page?: number;
   perPage?: number;
   tag?: string;
-  cookieHeader?: string; // <--- добавили для SSR
+  cookieHeader?: string; // <--- додали для SSR
 }
 
 export const fetchNotes = async ({
@@ -45,6 +45,7 @@ export const createNote = async (note: CreateNoteDto): Promise<Note> => {
   const res = await nextServer.post<Note>('/notes', note);
   return res.data;
 };
+
 // export const createNote = async (note: {
 //   title: string;
 //   content: string;

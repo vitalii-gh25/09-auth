@@ -32,7 +32,7 @@ const ProfilePage = async () => {
         <div className={css.avatarWrapper}>
           {user.avatar && (
             <Image
-              src={user.avatar} // полный URL с бэкенда
+              src={user.avatar}
               alt="User Avatar"
               width={120}
               height={120}
