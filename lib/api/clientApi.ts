@@ -95,25 +95,6 @@ export const getMe = async (): Promise<User> => {
   return data;
 };
 
-export type UpdateUserRequest = {
-  userName?: string;
-  photoUrl?: string;
-  avatar?: string;
-  email?: string;
-};
-
-export const updateMe = async (payload: UpdateUserRequest) => {
-  const res = await nextServer.patch<User>('/users/me', payload);
-  return res.data;
-};
-
-export const uploadImage = async (file: File): Promise<string> => {
-  const formData = new FormData();
-  formData.append('file', file);
-  const { data } = await nextServer.post('/upload', formData);
-  return data.url;
-};
-
 type CheckSessionRequest = {
   success: boolean;
 };
@@ -121,4 +102,17 @@ type CheckSessionRequest = {
 export const checkSession = async () => {
   const res = await nextServer.get<CheckSessionRequest>('/auth/session');
   return res.data.success;
+};
+
+// -------- USER --------
+
+export type UpdateUserRequest = {
+  username?: string;
+  avatar?: string;
+  email?: string;
+};
+
+export const updateMe = async (payload: UpdateUserRequest): Promise<User> => {
+  const res = await nextServer.patch<User>('/users/me', payload);
+  return res.data;
 };

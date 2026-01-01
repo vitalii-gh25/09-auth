@@ -1,4 +1,5 @@
-import Image from 'next/image';
+// import Image from 'next/image';
+
 import { Metadata } from 'next';
 import css from './ProfilePage.module.css';
 import { getServerMe } from '@/lib/api/serverApi';
@@ -27,17 +28,19 @@ const ProfilePage = async () => {
         </div>
 
         <div className={css.avatarWrapper}>
-          <Image
-            src="/avatar.jpeg"
-            alt="User Avatar"
-            width={120}
-            height={120}
-            className={css.avatar}
-          />
+          {user.avatar && (
+            <img
+              src={user.avatar} // берём полный URL с бекенда
+              alt="User Avatar"
+              width={120}
+              height={120}
+              className={css.avatar}
+            />
+          )}
         </div>
 
         <div className={css.profileInfo}>
-          <p>Username: {user.userName}</p>
+          <p>Username: {user.username}</p>
           <p>Email: {user.email}</p>
         </div>
       </div>

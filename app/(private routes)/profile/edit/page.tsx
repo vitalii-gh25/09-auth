@@ -1,65 +1,72 @@
+// app/(private routes)/profile/edit/page.tsx
+
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import AvatarPicker from '@/components/AvatarPicker/AvatarPicker';
-import { getMe, updateMe, uploadImage } from '@/lib/api/clientApi';
 import css from './EditProfilePage.module.css';
+import { useAuthStore } from '@/lib/store/authStore';
+import { updateMe } from '@/lib/api/clientApi';
 
 const EditProfile = () => {
-  const [userName, setUserName] = useState('');
-  const [photoUrl, setPhotoUrl] = useState('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [email, setEmail] = useState('');
+  const router = useRouter();
+  const user = useAuthStore(state => state.user);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const setUser = useAuthStore(state => state.setUser);
 
-  useEffect(() => {
-    getMe().then(user => {
-      setUserName(user.userName ?? '');
-      setPhotoUrl(user.photoUrl ?? '');
-      setEmail(user.email ?? '');
-    });
-  }, []);
+  // State инициализируем сразу из user
+  const [username, setUsername] = useState(user?.username ?? '');
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserName(event.target.value);
-  };
+  if (!user || !isAuthenticated) return <p>Loading...</p>;
 
-  const handleSaveUser = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     try {
-      const newPhotoUrl = imageFile ? await uploadImage(imageFile) : '';
-      await updateMe({ userName, photoUrl: newPhotoUrl });
-    } catch (error) {
-      console.error('Oops, some error:', error);
+      // Отправляем только email и username, как требует API
+      const updatedUser = await updateMe({
+        email: user.email,
+        username,
+      });
+
+      setUser(updatedUser); // обновляем store
+      router.push('/profile'); // редирект на страницу профиля
+    } catch (err) {
+      console.error('Error updating profile:', err);
     }
   };
 
-  const router = useRouter();
-
-  const handleCancel = () => {
-    router.push('/profile'); // редирект на страницу профиля
-  };
+  const handleCancel = () => router.push('/profile');
 
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>
         <h1 className={css.formTitle}>Edit Profile</h1>
 
-        <AvatarPicker profilePhotoUrl={photoUrl} onChangePhoto={setImageFile} />
+        {/* Аватар через обычный img */}
+        {user.avatar && (
+          <img
+            src={user.avatar} // полный URL с бекенда
+            alt="User Avatar"
+            width={120}
+            height={120}
+            className={css.avatar}
+          />
+        )}
 
-        <form className={css.profileInfo} onSubmit={handleSaveUser}>
+        <form className={css.profileInfo} onSubmit={handleSubmit}>
           <div className={css.usernameWrapper}>
-            <label htmlFor="userName">Username:</label>
+            <label htmlFor="username">Username:</label>
             <input
-              id="userName"
+              id="username"
               type="text"
               className={css.input}
-              value={userName}
-              onChange={handleChange}
+              value={username}
+              onChange={e => setUsername(e.target.value)}
             />
           </div>
 
-          <p>Email: {email}</p>
+          <p>Email: {user.email}</p>
 
           <div className={css.actions}>
             <button type="submit" className={css.saveButton}>
