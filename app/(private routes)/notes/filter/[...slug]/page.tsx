@@ -2,12 +2,13 @@
 
 import { Metadata } from 'next';
 import {
-  HydrationBoundary,
   QueryClient,
+  HydrationBoundary,
   dehydrate,
 } from '@tanstack/react-query';
 
 import NotesClient from './Notes.client';
+// import { fetchNotes } from '@/lib/api/clientApi';
 
 type Props = {
   params: Promise<{ slug?: string[] }>;
@@ -51,8 +52,18 @@ const NotesByCategory = async ({ params }: Props) => {
   const slug = slugArr || ['all'];
   const tag = slug[0] === 'all' ? undefined : slug[0];
 
-  // ❗️Создаём пустой QueryClient, НИЧЕГО не префетчим на сервере
   const queryClient = new QueryClient();
+
+  // await queryClient.prefetchQuery({
+  //   queryKey: ['notes', 1, '', tag],
+  //   queryFn: () =>
+  //     fetchNotes({
+  //       page: 1,
+  //       perPage: 12,
+  //       search: '',
+  //       tag,
+  //     }),
+  // });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -15,6 +15,7 @@ export interface FetchNotesParams {
   page?: number;
   perPage?: number;
   tag?: string;
+  cookieHeader?: string; // <--- добавили для SSR
 }
 
 export const fetchNotes = async ({
