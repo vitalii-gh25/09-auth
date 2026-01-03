@@ -5,7 +5,9 @@ import { cookies } from 'next/headers';
 import { parse } from 'cookie';
 import { checkServerSession } from './lib/api/serverApi';
 
-const privateRoutes = ['/profile'];
+// ⬆️ ДОДАНО приватні маршрути /notes та /notes/filter
+const privateRoutes = ['/profile', '/notes', '/notes/filter'];
+
 const publicRoutes = ['/sign-in', '/sign-up'];
 
 export async function proxy(request: NextRequest) {
@@ -15,19 +17,21 @@ export async function proxy(request: NextRequest) {
   const refreshToken = cookieStore.get('refreshToken')?.value;
 
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
+
+  // ⬆️ Логіка залишилась, але тепер вона враховує нові приватні маршрути
   const isPrivateRoute = privateRoutes.some(route =>
     pathname.startsWith(route),
   );
 
+  // Якщо accessToken відсутній
   if (!accessToken) {
     if (refreshToken) {
-      // Якщо accessToken відсутній, але є refreshToken — потрібно перевірити сесію навіть для публічного маршруту,
-      // адже сесія може залишатися активною, і тоді потрібно заборонити доступ до публічного маршруту.
       const data = await checkServerSession();
       const setCookie = data.headers['set-cookie'];
 
       if (setCookie) {
         const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+
         for (const cookieStr of cookieArray) {
           const parsed = parse(cookieStr);
           const options = {
@@ -35,53 +39,54 @@ export async function proxy(request: NextRequest) {
             path: parsed.Path,
             maxAge: Number(parsed['Max-Age']),
           };
+
           if (parsed.accessToken)
             cookieStore.set('accessToken', parsed.accessToken, options);
+
           if (parsed.refreshToken)
             cookieStore.set('refreshToken', parsed.refreshToken, options);
         }
-        // Якщо сесія все ще активна:
-        // для публічного маршруту — виконуємо редірект на головну.
+
+        // 🔁 Логіку не змінював, лише залишив як в тебе — все ок
         if (isPublicRoute) {
           return NextResponse.redirect(new URL('/', request.url), {
-            headers: {
-              Cookie: cookieStore.toString(),
-            },
+            headers: { Cookie: cookieStore.toString() },
           });
         }
-        // для приватного маршруту — дозволяємо доступ
+
         if (isPrivateRoute) {
           return NextResponse.next({
-            headers: {
-              Cookie: cookieStore.toString(),
-            },
+            headers: { Cookie: cookieStore.toString() },
           });
         }
       }
     }
-    // Якщо refreshToken або сесії немає:
-    // публічний маршрут — дозволяємо доступ
-    if (isPublicRoute) {
-      return NextResponse.next();
-    }
 
-    // приватний маршрут — редірект на сторінку входу
-    if (isPrivateRoute) {
+    // 🟢 НЕ ЗМІНЮВАЛОСЬ — просто лишилось логічно правильним
+    if (isPublicRoute) return NextResponse.next();
+
+    if (isPrivateRoute)
       return NextResponse.redirect(new URL('/sign-in', request.url));
-    }
   }
 
-  // Якщо accessToken існує:
-  // публічний маршрут — виконуємо редірект на головну
-  if (isPublicRoute) {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-  // приватний маршрут — дозволяємо доступ
-  if (isPrivateRoute) {
-    return NextResponse.next();
-  }
+  // 🟢 НЕ ЗМІНЮВАЛОСЬ
+  if (isPublicRoute) return NextResponse.redirect(new URL('/', request.url));
+
+  if (isPrivateRoute) return NextResponse.next();
+
+  // ⬇️ ДОДАНО ВАЖЛИВО
+  // Раніше middleware міг "зависати", якщо маршрут не приватний і не публічний.
+  // Тепер всі інші запити просто пропускаються.
+  return NextResponse.next();
 }
 
+// ⬇️ ДОДАНО matcher для notes і notes/filter
 export const config = {
-  matcher: ['/profile/:path*', '/sign-in', '/sign-up'],
+  matcher: [
+    '/profile/:path*', // було
+    '/notes/:path*', // ДОДАНО
+    '/notes/filter/:path*', // ДОДАНО
+    '/sign-in',
+    '/sign-up',
+  ],
 };

@@ -6,7 +6,8 @@ import {
   dehydrate,
 } from '@tanstack/react-query';
 
-import { fetchNoteById } from '@/lib/api/clientApi';
+// ✅ Замінив клієнтське API на серверне API
+import { fetchNoteById } from '@/lib/api/serverApi';
 import NotePreview from './NotePreview.client';
 
 type Props = {
@@ -19,6 +20,7 @@ export default async function NoteModalPage({ params }: Props) {
   const { id } = await params;
   const queryClient = new QueryClient();
 
+  // ✅ Використовуємо серверну функцію для prefetchQuery
   await queryClient.prefetchQuery({
     queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),

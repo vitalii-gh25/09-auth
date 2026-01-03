@@ -5,7 +5,7 @@
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNoteStore } from '@/lib/store/noteStore';
-import { nextServer } from '@/lib/api/api';
+import { createNote } from '@/lib/api/clientApi'; // ✅ ВАЖЛИВО: правильний імпорт
 import css from './NoteForm.module.css';
 
 export interface CreateNoteDto {
@@ -21,10 +21,10 @@ export default function NoteForm() {
 
   const { mutate, isPending, isError } = useMutation({
     mutationFn: async (note: CreateNoteDto) => {
-      await nextServer.post('/notes', note); // отправка с куками
+      await createNote(note); // ✅ використовуємо API з clientApi
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] }); // обновляем кеш заметок
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
       clearDraft();
       router.back();
     },

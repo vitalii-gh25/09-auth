@@ -15,7 +15,7 @@ export interface FetchNotesParams {
   page?: number;
   perPage?: number;
   tag?: string;
-  cookieHeader?: string; // <--- додали для SSR
+  cookieHeader?: string;
 }
 
 export const fetchNotes = async ({
@@ -46,15 +46,6 @@ export const createNote = async (note: CreateNoteDto): Promise<Note> => {
   return res.data;
 };
 
-// export const createNote = async (note: {
-//   title: string;
-//   content: string;
-//   tag: string;
-// }): Promise<Note> => {
-//   const { data } = await nextServer.post<Note>('/notes', note);
-//   return data;
-// };
-
 export const deleteNote = async (id: string): Promise<Note> => {
   const { data } = await nextServer.delete<Note>(`/notes/${id}`);
   return data;
@@ -62,16 +53,12 @@ export const deleteNote = async (id: string): Promise<Note> => {
 
 // -------- AUTH --------
 
+// ✅ Виправлено userName -> username
 export type RegisterRequest = {
   email: string;
   password: string;
-  userName: string;
+  username: string;
 };
-
-export interface RegisterData {
-  email: string;
-  password: string;
-}
 
 export const register = async (data: RegisterRequest) => {
   const res = await nextServer.post<User>('/auth/register', data);
@@ -97,12 +84,12 @@ export const getMe = async (): Promise<User> => {
   return data;
 };
 
-type CheckSessionRequest = {
+type CheckSessionResponse = {
   success: boolean;
 };
 
 export const checkSession = async () => {
-  const res = await nextServer.get<CheckSessionRequest>('/auth/session');
+  const res = await nextServer.get<CheckSessionResponse>('/auth/session');
   return res.data.success;
 };
 

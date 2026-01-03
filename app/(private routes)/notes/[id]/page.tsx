@@ -1,4 +1,4 @@
-// app/notes/[id]/page.tsx
+// app/(private routes)/notes/[id]/page.tsx
 
 import { Metadata } from 'next';
 import {
@@ -6,16 +6,19 @@ import {
   HydrationBoundary,
   dehydrate,
 } from '@tanstack/react-query';
-import { fetchNoteById } from '@/lib/api/clientApi';
+// ⚠️ Змінено імпорт: для серверного компоненту використовуємо serverApi
+import { fetchNoteById } from '@/lib/api/serverApi';
 import NoteDetailsClient from '@/app/(private routes)/notes/[id]/NoteDetails.client';
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
+// Генерація метаданих для SEO та OpenGraph
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const note = await fetchNoteById(id);
+  const note = await fetchNoteById(id); // Використовуємо серверну функцію
+
   return {
     title: `Note: ${note.title}`,
     description: note.content.slice(0, 30),
@@ -37,10 +40,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// Серверний компонент сторінки нотатки
 const NoteDetails = async ({ params }: Props) => {
   const { id } = await params;
+
   const queryClient = new QueryClient();
 
+  // ⚠️ Використовуємо серверну функцію fetchNoteById
   await queryClient.prefetchQuery({
     queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),
