@@ -33,7 +33,6 @@ const NoteDetailsClient = ({ id }: Props) => {
         </div>
         <p className={css.content}>{note.content}</p>
 
-        {/* ✅ ТІЛЬКИ createdAt */}
         <p className={css.date}>Created at: {note.createdAt}</p>
       </div>
     </div>

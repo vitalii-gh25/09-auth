@@ -53,7 +53,6 @@ export const deleteNote = async (id: string): Promise<Note> => {
 
 // -------- AUTH --------
 
-// ✅ Виправлено userName -> username
 export type RegisterRequest = {
   email: string;
   password: string;

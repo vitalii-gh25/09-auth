@@ -41,7 +41,6 @@ export default function NotePreview() {
 
           <p className={css.content}>{note.content}</p>
 
-          {/* ✅ только createdAt */}
           <p className={css.date}>Created at: {note.createdAt}</p>
         </div>
       </div>

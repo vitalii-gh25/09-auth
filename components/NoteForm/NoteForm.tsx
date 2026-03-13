@@ -5,7 +5,7 @@
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNoteStore } from '@/lib/store/noteStore';
-import { createNote } from '@/lib/api/clientApi'; // ✅ ВАЖЛИВО: правильний імпорт
+import { createNote } from '@/lib/api/clientApi';
 import css from './NoteForm.module.css';
 
 export interface CreateNoteDto {

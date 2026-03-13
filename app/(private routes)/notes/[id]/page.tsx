@@ -6,7 +6,6 @@ import {
   HydrationBoundary,
   dehydrate,
 } from '@tanstack/react-query';
-// ⚠️ Змінено імпорт: для серверного компоненту використовуємо serverApi
 import { fetchNoteById } from '@/lib/api/serverApi';
 import NoteDetailsClient from '@/app/(private routes)/notes/[id]/NoteDetails.client';
 
@@ -14,7 +13,6 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-// Генерація метаданих для SEO та OpenGraph
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const note = await fetchNoteById(id); // Використовуємо серверну функцію
@@ -46,7 +44,7 @@ const NoteDetails = async ({ params }: Props) => {
 
   const queryClient = new QueryClient();
 
-  // ⚠️ Використовуємо серверну функцію fetchNoteById
+  // Використовуємо серверну функцію fetchNoteById
   await queryClient.prefetchQuery({
     queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),

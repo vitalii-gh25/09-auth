@@ -9,24 +9,17 @@ import css from './AuthNavigation.module.css';
 
 const AuthNavigation = () => {
   const router = useRouter();
-  // Отримуємо поточну сесію та юзера
   const { isAuthenticated, user } = useAuthStore();
-  // Отримуємо метод очищення глобального стану
   const clearIsAuthenticated = useAuthStore(
     state => state.clearIsAuthenticated,
   );
 
   const handleLogout = async () => {
-    // Викликаємо logout
     await logout();
-    // Чистимо глобальний стан
     clearIsAuthenticated();
-    // Виконуємо навігацію на сторінку авторизації
     router.push('/sign-in');
   };
 
-  // Якщо є сесія - відображаємо кнопку Logout, email та Profile
-  // інакше - лінки для авторизації
   return isAuthenticated ? (
     <>
       <li className={css.navigationItem}>

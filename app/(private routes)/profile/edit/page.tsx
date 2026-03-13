@@ -16,7 +16,6 @@ const EditProfile = () => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const setUser = useAuthStore(state => state.setUser);
 
-  // Инициализация state из user
   const [username, setUsername] = useState(user?.username ?? '');
 
   if (!user || !isAuthenticated) {

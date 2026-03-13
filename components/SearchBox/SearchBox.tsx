@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import css from "./SearchBox.module.css";
 
 interface SearchBoxProps {
-  value?: string; // для контролю, якщо треба
+  value?: string;
   defaultValue?: string;
   onChange: (value: string) => void;
 }

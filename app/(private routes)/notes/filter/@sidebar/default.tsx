@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import css from './SidebarNotes.module.css';
 
-// Список тегов вручную, по документации API
 const TAGS = ['Work', 'Personal', 'Meeting', 'Shopping', 'Todo'];
 
 const SidebarNotes = () => {

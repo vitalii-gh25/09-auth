@@ -2,12 +2,10 @@
 
 'use client';
 
-import { ReactNode, useEffect } from 'react'; // ⬅️ додано useEffect
-import { useRouter } from 'next/navigation'; // ⬅️ додано useRouter
+import { ReactNode, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 import AuthProvider from '@/components/AuthProvider/AuthProvider';
-// import Header from '@/components/Header/Header';
-// import Footer from '@/components/Footer/Footer';
 import TanStackProvider from '@/components/TanStackProvider/TanStackProvider';
 import '@/app/globals.css';
 
@@ -16,8 +14,7 @@ interface Props {
 }
 
 export default function AuthLayout({ children }: Props) {
-  const router = useRouter(); // ⬅️ ініціалізація роутера
-
+  const router = useRouter();
   useEffect(() => {
     router.refresh(); // ⬅️ ОБОВʼЯЗКОВИЙ refresh при монтуванні
   }, [router]);
@@ -25,9 +22,7 @@ export default function AuthLayout({ children }: Props) {
   return (
     <AuthProvider>
       <TanStackProvider>
-        {/* <Header /> */}
         <main>{children}</main>
-        {/* <Footer /> */}
       </TanStackProvider>
     </AuthProvider>
   );

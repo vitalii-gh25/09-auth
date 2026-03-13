@@ -5,7 +5,6 @@ import { cookies } from 'next/headers';
 import { parse } from 'cookie';
 import { checkServerSession } from './lib/api/serverApi';
 
-// ⬆️ ДОДАНО приватні маршрути /notes та /notes/filter
 const privateRoutes = ['/profile', '/notes', '/notes/filter'];
 
 const publicRoutes = ['/sign-in', '/sign-up'];
@@ -18,12 +17,10 @@ export async function proxy(request: NextRequest) {
 
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
-  // ⬆️ Логіка залишилась, але тепер вона враховує нові приватні маршрути
   const isPrivateRoute = privateRoutes.some(route =>
     pathname.startsWith(route),
   );
 
-  // Якщо accessToken відсутній
   if (!accessToken) {
     if (refreshToken) {
       const data = await checkServerSession();
@@ -47,7 +44,6 @@ export async function proxy(request: NextRequest) {
             cookieStore.set('refreshToken', parsed.refreshToken, options);
         }
 
-        // 🔁 Логіку не змінював, лише залишив як в тебе — все ок
         if (isPublicRoute) {
           return NextResponse.redirect(new URL('/', request.url), {
             headers: { Cookie: cookieStore.toString() },
@@ -62,25 +58,19 @@ export async function proxy(request: NextRequest) {
       }
     }
 
-    // 🟢 НЕ ЗМІНЮВАЛОСЬ — просто лишилось логічно правильним
     if (isPublicRoute) return NextResponse.next();
 
     if (isPrivateRoute)
       return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  // 🟢 НЕ ЗМІНЮВАЛОСЬ
   if (isPublicRoute) return NextResponse.redirect(new URL('/', request.url));
 
   if (isPrivateRoute) return NextResponse.next();
 
-  // ⬇️ ДОДАНО ВАЖЛИВО
-  // Раніше middleware міг "зависати", якщо маршрут не приватний і не публічний.
-  // Тепер всі інші запити просто пропускаються.
   return NextResponse.next();
 }
 
-// ⬇️ ДОДАНО matcher для notes і notes/filter
 export const config = {
   matcher: [
     '/profile/:path*', // було
